@@ -4,6 +4,10 @@ import css from 'bootstrap/dist/css/bootstrap.css'
 import moment from 'moment'
 /* eslint-disable no-new */
 
+var WildVue = require('wildvue')
+var Wilddog = require('wilddog')
+// 在模块化环境中需要使用 user 安装
+Vue.use(WildVue)
 
 window.freeComment = function(el){
   new Vue({

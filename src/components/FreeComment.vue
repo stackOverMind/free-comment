@@ -15,14 +15,14 @@
                     <a href="#"> <img v-if='profile.headUrl==null' alt="profile.uname" class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTZlNDkyMDRkZiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1NmU0OTIwNGRmIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy44NzUiIHk9IjM2LjUiPjY0eDY0PC90ZXh0PjwvZz48L2c+PC9zdmc+"
                         data-holder-rendered="true" style="width: 64px; height: 64px;">
 
-                      <img v-if='item.headUrl!=null' alt="{{item.uname}}" class="media-object" style="width: 64px; height: 64px;">
+                      <img v-if='profile.headUrl!=null' alt="{{profile.uname}}" class="media-object" style="width: 64px; height: 64px;">
                     </a>
                   </div>
                   <div class="media-body">
                     <h4 class="media-heading">{{profile.uname}}</h4>
-                    <textarea class="form-control" rows="2"></textarea>
+                    <textarea class="form-control" v-model="currentMessage" rows="2"></textarea>
                     <div class='margin-8'>
-                      <button type="button" class="btn btn-success float-right">&nbsp&nbsp&nbsp提交&nbsp&nbsp&nbsp;</button>
+                      <button type="button" class="btn btn-success float-right" @click = "post" >&nbsp&nbsp&nbsp提交&nbsp&nbsp&nbsp;</button>
                     </div>
                   </div>
                 </li>
@@ -51,6 +51,9 @@
 
 <script>
 
+import Wilddog from 'wilddog'
+var href =  window.location.href.split('/').join('-');
+var ref = new Wilddog('http://test123.wilddogio.com/freee-comments/'+href);
 export default {
   data () {
     return {
@@ -62,24 +65,40 @@ export default {
       },
       
       comments:[
-        {
-          uname:'jackxy',
-          time:new Date().getTime(),
-          text:'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~hahaha哈哈哈',
-          headUrl:null,
-        },
-        {
-          uname:'jackxy',
-          time:new Date().getTime(),
-          text:'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~hahaha哈哈哈',
-          headUrl:null,
-        }
+
       ]
     }
   },
   components:{
 
   },
+  ready(){
+    var self = this;
+    ref.on('child_added',function(snapshot){
+      var value = snapshot.val();
+      self.comments.unshift(value);
+    });
+  },
+  methods:{
+    post(){
+      var message = this.currentMessage;
+      var uname = this.profile.uname;
+      var time = new Date().getTime();
+      ref.push({
+        text:message,
+        uname:uname,
+        time:time
+      },(err)=>{
+        if(err){
+          //TODO 
+        }
+        else{
+          this.currentMessage = '';
+        }
+      });
+
+    }
+  }
 }
 </script>
 
