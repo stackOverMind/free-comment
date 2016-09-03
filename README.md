@@ -1,5 +1,7 @@
 # free-comment
 
+[![Join the chat at https://gitter.im/free-comment/Lobby](https://badges.gitter.im/free-comment/Lobby.svg)](https://gitter.im/free-comment/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > A Vue.js project
 
 ## Build Setup
