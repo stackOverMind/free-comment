@@ -9,10 +9,13 @@ var Wilddog = require('wilddog')
 // 在模块化环境中需要使用 user 安装
 Vue.use(WildVue)
 
-window.freeComment = function(el){
+window.freeComment = function(el,id){
   new Vue({
     el: el,
-    template:'<free-comment></free-comment>',
+    data:{
+      id:id,
+    },
+    template:'<free-comment :id="id"></free-comment>',
     replace: false,
     components: { FreeComment }
   })
