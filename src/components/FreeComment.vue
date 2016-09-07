@@ -1,7 +1,7 @@
 <template>
-  {{currentUser |json}}
   <div class='container'>
     <div class='row'>
+      {{c|json}}
       <div class="row clear">
         <div class="col-md-1"></div>
         <div class="col-md-12">
@@ -12,8 +12,7 @@
                 <li class="media">
                   <div class="media-left">
                     <a href="#"> <img v-if='!currentUser||!!currentUser.photoUrl == false' alt="currentUser.uid" class="media-object"
-                        src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTZlNDkyMDRkZiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1NmU0OTIwNGRmIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy44NzUiIHk9IjM2LjUiPjY0eDY0PC90ZXh0PjwvZz48L2c+PC9zdmc+"
-                        data-holder-rendered="true" style="width: 64px; height: 64px;">
+                        src="../assets/default-head.jpg" data-holder-rendered="true" style="width: 64px; height: 64px;">
 
                       <img v-if='currentUser&&!!currentUser.photoUrl == true' alt="{{currentUser.photoUrl}}" class="media-object" style="width: 64px; height: 64px;">
                     </a>
@@ -21,14 +20,15 @@
                   <div class="media-body">
                     <h4 class="media-heading" v-if="currentUser">{{currentUser.displayName||'匿名-'+ currentUser.uid}}</h4>
                     <textarea class="form-control" v-model="currentMessage" rows="2"></textarea>
-                    <div class='margin-8'>
+                    <div class='margin-8' v-if="canPost">
                       <button type="button" class="btn btn-success float-right" @click="post">&nbsp&nbsp&nbsp提交&nbsp&nbsp&nbsp;</button>
                     </div>
+
                   </div>
                 </li>
-                <li class="media" v-for="item in comments">
+                <li class="media" v-for="item in commentsR">
                   <div class="media-left">
-                    <a href="#"> <img v-if='item.headUrl==null' alt="item.uname||item.uid" class="media-object" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTZlNDkyMDRkZiB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1NmU0OTIwNGRmIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy44NzUiIHk9IjM2LjUiPjY0eDY0PC90ZXh0PjwvZz48L2c+PC9zdmc+"
+                    <a href="#"> <img v-if='item.headUrl==null' alt="item.uname||item.uid" class="media-object" src="../assets/default-head.jpg"
                         data-holder-rendered="true" style="width: 64px; height: 64px;">
 
                       <img v-if='item.headUrl!=null' alt="{{item.uname}}" class="media-object" style="width: 64px; height: 64px;">
@@ -40,6 +40,7 @@
                     <p>{{item.text}}</p>
                   </div>
                 </li>
+                <a id="end" @click='loadMore()'>更多...</a>
               </ul>
             </div>
           </div>
@@ -73,6 +74,7 @@ export default {
       authMethod:null,
       currentUser:null,
       profile:{},
+      loading:true
 
     }
   },
@@ -100,17 +102,45 @@ export default {
       },500)
 
       this.ref = ref.child(this.id);
-      this.$bindAsArray('comments',this.ref);
+      
+      this.$bindAsArray('comments',this.ref.limitToLast(10));
+      ref.limitToLast(10).once('value',function(snapshot){
+        console.log('init');
+        this.loading = false;
+      });
     }
+    this.$watch('comments',function(newValue,oldValue){
+      if(!!this.newValue == false && this.loading){
+        return oldValue;
+      }
+      
+    })
+   
   },
   computed:{
-    commentsR(){
+    commentsR:function(){
       if(this.comments == null){
         return [];
       }
       else{
-        return this.comments.reverse();
+        var res = [];
+        for(var i = this.comments.length-1;i>=0;i--){
+          res.push(this.comments[i]);
+        }
+        return res;
       }
+    },
+    showCount:function(){
+      if(this.comments){
+        return this.comments.length;
+      }
+      return 0;
+    },
+    canPost:function(){
+      if(!!this.currentMessage&& !this.loading){
+        return true;
+      }
+      return false;
     }
   },
   methods:{
@@ -132,7 +162,16 @@ export default {
           this.currentMessage = '';
         }
       });
-
+    },
+    loadMore(){
+      var limit = this.showCount+20;
+      this.$unbind('comments');
+      this.loading = true;
+      this.$bindAsArray('comments',this.ref.limitToLast(limit));
+      ref.limitToLast(limit).once('value',function(snapshot){
+        window.location.href = "#end";
+        this.loading = false;
+      });
     }
   }
 }

@@ -15,7 +15,7 @@
     "babel-runtime": "^6.0.0",
     "bootstrap": "^3.3.7",
     "moment": "^2.14.1",
-    "vue": "^1.0.21",
+    "vue": "^1.0.26",
     "vue-strap": "^1.1.4",
     "wilddog": "^2.0.3",
     "wildvue": "^1.0.4"
